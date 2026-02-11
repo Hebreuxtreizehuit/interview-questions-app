@@ -1,0 +1,809 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#0b0f14" />
+  <title>Interview Questions</title>
+
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" href="icon-192.png">
+
+  <style>
+    :root{
+      --bg:#0b0f14; --panel:#101723; --panel2:#0e1520;
+      --text:#e7eef7; --muted:#9fb0c2; --line:#233246;
+      --accent:#4aa3ff; --danger:#ff5b6e; --ok:#35d07f; --warn:#ffc44d;
+      --radius:16px;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0; font-family:system-ui, -apple-system, Segoe UI, Roboto, Arial;
+      background:linear-gradient(180deg, #0b0f14 0%, #070a0f 100%);
+      color:var(--text);
+    }
+    header{
+      position:sticky; top:0; z-index:10;
+      background:rgba(11,15,20,.92); backdrop-filter: blur(10px);
+      border-bottom:1px solid var(--line);
+      padding:14px 14px 10px;
+    }
+    .title{display:flex; align-items:center; justify-content:space-between; gap:10px;}
+    h1{font-size:18px; margin:0; letter-spacing:.2px}
+    .pill{
+      font-size:12px; color:var(--muted);
+      border:1px solid var(--line); padding:6px 10px; border-radius:999px;
+      background:rgba(16,23,35,.5);
+    }
+
+    main{padding:14px; max-width:980px; margin:0 auto;}
+    .grid{display:grid; gap:12px;}
+    .row{display:flex; gap:10px; flex-wrap:wrap;}
+    .card{
+      background:linear-gradient(180deg, rgba(16,23,35,.92), rgba(14,21,32,.92));
+      border:1px solid var(--line); border-radius:var(--radius);
+      padding:12px;
+      box-shadow: 0 10px 30px rgba(0,0,0,.25);
+    }
+    input, select, textarea, button{
+      font:inherit; color:var(--text);
+      background:#0b111b; border:1px solid var(--line);
+      border-radius:12px; padding:10px 10px;
+      outline:none;
+    }
+    textarea{min-height:88px; resize:vertical}
+    input::placeholder, textarea::placeholder{color:#7f93a8}
+    button{
+      cursor:pointer; transition:transform .02s ease;
+      background:rgba(74,163,255,.12);
+      border:1px solid rgba(74,163,255,.35);
+    }
+    button:active{transform:translateY(1px)}
+    .btn{
+      padding:10px 12px; border-radius:12px; display:inline-flex; gap:8px; align-items:center;
+    }
+    .btn.secondary{background:rgba(159,176,194,.08); border:1px solid var(--line);}
+    .btn.danger{background:rgba(255,91,110,.12); border:1px solid rgba(255,91,110,.35);}
+    .btn.ok{background:rgba(53,208,127,.12); border:1px solid rgba(53,208,127,.35);}
+
+    .controls{display:grid; gap:10px}
+    .controls .row > *{flex:1; min-width:160px}
+
+    .listHead{display:flex; align-items:center; justify-content:space-between; gap:10px;}
+    .muted{color:var(--muted); font-size:12px}
+    .chips{display:flex; gap:8px; flex-wrap:wrap}
+    .chip{
+      font-size:12px; color:var(--muted);
+      border:1px solid var(--line); padding:6px 10px; border-radius:999px;
+      cursor:pointer; user-select:none;
+      background:rgba(16,23,35,.35);
+    }
+    .chip.active{border-color:rgba(74,163,255,.6); color:#cfe6ff}
+
+    .qCard{display:grid; gap:8px}
+    .qTop{display:flex; align-items:flex-start; justify-content:space-between; gap:10px}
+    .qTitle{font-weight:650; line-height:1.25}
+    .meta{display:flex; gap:8px; flex-wrap:wrap}
+    .badge{
+      font-size:11px; color:var(--muted);
+      border:1px solid var(--line); padding:4px 8px; border-radius:999px;
+      background:rgba(0,0,0,.18);
+    }
+    .qActions{display:flex; gap:8px; align-items:center}
+    .iconBtn{
+      padding:8px 10px; border-radius:12px;
+      background:rgba(159,176,194,.08); border:1px solid var(--line);
+    }
+    .star{color:#ffd86b}
+    .hidden{display:none !important}
+
+    .twoCol{display:grid; gap:12px;}
+    @media (min-width: 860px){
+      .twoCol{grid-template-columns: 360px 1fr; align-items:start;}
+    }
+
+    dialog{
+      border:none; border-radius:18px; padding:0;
+      width:min(720px, calc(100vw - 18px));
+      background:transparent;
+    }
+    dialog::backdrop{background:rgba(0,0,0,.55)}
+    .modal{background:linear-gradient(180deg, rgba(16,23,35,.98), rgba(14,21,32,.98));
+      border:1px solid var(--line); border-radius:18px; padding:14px;}
+    .modal h2{margin:0 0 10px; font-size:16px}
+    .modal .row > *{flex:1; min-width:160px}
+    .footerRow{display:flex; justify-content:flex-end; gap:10px; margin-top:10px; flex-wrap:wrap}
+    .kbd{font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas; font-size:12px; color:var(--muted)}
+  </style>
+</head>
+
+<body>
+  <header>
+    <div class="title">
+      <h1>Interview Questions</h1>
+      <div class="pill" id="statusPill">Offline-ready</div>
+    </div>
+    <div class="muted" style="margin-top:6px">
+      Store questions • add your answers • practice smarter
+    </div>
+  </header>
+
+  <main class="twoCol">
+    <!-- Left: Add / Import / Export -->
+    <section class="card">
+      <div class="listHead">
+        <div>
+          <div style="font-weight:650">Add a question</div>
+          <div class="muted">Tip: keep it short and specific.</div>
+        </div>
+        <button class="btn secondary" id="seedBtn" title="Add sample questions">+ Seed</button>
+      </div>
+
+      <div class="grid" style="margin-top:10px">
+        <label class="muted">Question</label>
+        <textarea id="q_text" placeholder="e.g., Tell me about a time you handled conflict on a team."></textarea>
+
+        <div class="row">
+          <div>
+            <label class="muted">Category</label>
+            <select id="q_category">
+              <option>Common</option>
+              <option>Behavioral</option>
+              <option>Technical</option>
+              <option>Leadership</option>
+              <option>Communication</option>
+              <option>Culture Fit</option>
+              <option>Salary</option>
+              <option>Company-Specific</option>
+            </select>
+          </div>
+          <div>
+            <label class="muted">Level</label>
+            <select id="q_level">
+              <option>Core</option>
+              <option>Advanced</option>
+            </select>
+          </div>
+        </div>
+
+        <label class="muted">Tags (comma-separated)</label>
+        <input id="q_tags" placeholder="e.g., teamwork, conflict, customer service">
+
+        <label class="muted">Your draft answer (optional)</label>
+        <textarea id="q_answer" placeholder="Use STAR: Situation, Task, Action, Result..."></textarea>
+
+        <button class="btn ok" id="addBtn">Add</button>
+
+        <hr style="border:none;border-top:1px solid var(--line); margin:8px 0">
+
+        <div class="grid">
+          <div class="listHead">
+            <div style="font-weight:650">Backup</div>
+            <div class="muted">Export / import your data.</div>
+          </div>
+          <div class="row">
+            <button class="btn secondary" id="exportBtn">Export JSON</button>
+            <button class="btn secondary" id="importBtn">Import JSON</button>
+          </div>
+          <input type="file" id="importFile" accept="application/json" class="hidden">
+          <div class="muted">Keyboard: <span class="kbd">Ctrl/⌘ + K</span> focuses search.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Right: Search / Filters / List -->
+    <section class="card">
+      <div class="controls">
+        <input id="search" placeholder="Search questions, tags, answers… (Ctrl/⌘+K)">
+        <div class="row">
+          <select id="filterCategory">
+            <option value="">All categories</option>
+          </select>
+          <select id="filterLevel">
+            <option value="">All levels</option>
+            <option value="Core">Core</option>
+            <option value="Advanced">Advanced</option>
+          </select>
+          <select id="sortBy">
+            <option value="updated_desc">Sort: recently edited</option>
+            <option value="created_desc">Sort: newest</option>
+            <option value="alpha_asc">Sort: A → Z</option>
+            <option value="fav_first">Sort: favorites first</option>
+          </select>
+        </div>
+
+        <div class="chips" id="quickChips"></div>
+
+        <div class="listHead">
+          <div>
+            <div style="font-weight:650">Your library</div>
+            <div class="muted" id="countLine">0 questions</div>
+          </div>
+          <div class="row" style="justify-content:flex-end; gap:8px">
+            <button class="btn secondary" id="randomBtn">🎲 Random</button>
+            <button class="btn danger" id="clearBtn" title="Delete everything">Clear all</button>
+          </div>
+        </div>
+      </div>
+
+      <div id="list" class="grid" style="margin-top:12px"></div>
+    </section>
+  </main>
+
+  <!-- Edit modal -->
+  <dialog id="editDialog">
+    <div class="modal">
+      <h2>Edit question</h2>
+      <div class="grid">
+        <label class="muted">Question</label>
+        <textarea id="e_text"></textarea>
+
+        <div class="row">
+          <div>
+            <label class="muted">Category</label>
+            <select id="e_category"></select>
+          </div>
+          <div>
+            <label class="muted">Level</label>
+            <select id="e_level">
+              <option>Core</option>
+              <option>Advanced</option>
+            </select>
+          </div>
+        </div>
+
+        <label class="muted">Tags</label>
+        <input id="e_tags" placeholder="comma, separated, tags">
+
+        <label class="muted">Your draft answer</label>
+        <textarea id="e_answer"></textarea>
+
+        <div class="footerRow">
+          <button class="btn secondary" id="cancelEdit">Cancel</button>
+          <button class="btn ok" id="saveEdit">Save</button>
+        </div>
+      </div>
+    </div>
+  </dialog>
+
+  <script>
+    const LS_KEY = "interview_questions_v1";
+
+    let items = [];
+
+    const CATEGORIES = [
+      "Common","Behavioral","Technical","Leadership","Communication",
+      "Culture Fit","Salary","Company-Specific"
+    ];
+
+    // ---- Seed data (50) ----
+    const SEED = [
+      {text:"Tell me about yourself.", category:"Common", level:"Core", tags:["intro","summary"], answer:"60–90s: present role/strengths → key experience → why this role/company."},
+      {text:"What interested you in this position?", category:"Common", level:"Core", tags:["motivation"], answer:"Tie your skills + interest to the role’s needs; mention what you learned from research."},
+      {text:"Why should we hire you?", category:"Common", level:"Core", tags:["value","pitch"], answer:"3 reasons: (1) skill/experience (2) proof/metric (3) fit for their problems."},
+      {text:"What are your strengths?", category:"Common", level:"Core", tags:["strengths"], answer:"Pick 2–3 strengths relevant to the job; give quick proof examples."},
+      {text:"What is a weakness you’re working on?", category:"Common", level:"Core", tags:["weakness","growth"], answer:"Choose a real but safe weakness; show actions you’re taking and improvement."},
+      {text:"Where do you see yourself in 3–5 years?", category:"Common", level:"Core", tags:["career"], answer:"Show growth aligned with the role; avoid sounding like you’ll leave immediately."},
+      {text:"What motivates you at work?", category:"Common", level:"Core", tags:["motivation","values"], answer:"Connect motivation to impact, learning, ownership, teamwork—match company style."},
+      {text:"How do you handle pressure or stress?", category:"Common", level:"Core", tags:["stress","resilience"], answer:"Explain routine: plan, prioritize, communicate, take brief resets; give example."},
+      {text:"How do you prioritize tasks when everything is urgent?", category:"Common", level:"Core", tags:["prioritization","time"], answer:"Clarify impact + deadline, group tasks, communicate tradeoffs, execute top value."},
+      {text:"What does success look like in this role?", category:"Company-Specific", level:"Advanced", tags:["clarifying","expectations"], answer:"Ask about goals, metrics, and what great performance looks like at 30/60/90 days."},
+
+      {text:"Tell me about a time you solved a difficult problem.", category:"Behavioral", level:"Core", tags:["STAR","problem solving"], answer:"STAR: Situation/Task → Action → Result (metric) → Lesson."},
+      {text:"Tell me about a time you made a mistake at work.", category:"Behavioral", level:"Core", tags:["accountability","learning"], answer:"Own it, fix it, explain prevention (checklist, review, communication)."},
+      {text:"Describe a time you failed and what you learned.", category:"Behavioral", level:"Core", tags:["growth","learning"], answer:"Show reflection + what changed; end with improved outcome later."},
+      {text:"Tell me about a time you handled conflict on a team.", category:"Behavioral", level:"Core", tags:["conflict","teamwork","STAR"], answer:"Listen, clarify, propose options; highlight outcome."},
+      {text:"Tell me about a time you received tough feedback.", category:"Behavioral", level:"Core", tags:["feedback","coachability"], answer:"Explain how you asked questions, acted, and improved results."},
+      {text:"Describe a time you had to learn something quickly.", category:"Behavioral", level:"Core", tags:["learning","adaptability"], answer:"How you learned fast (resources, practice) + result."},
+      {text:"Tell me about a time you improved a process.", category:"Behavioral", level:"Core", tags:["process","improvement"], answer:"Before/after: what changed, why, and the measurable benefit."},
+      {text:"Describe a time you took initiative without being asked.", category:"Behavioral", level:"Core", tags:["initiative","ownership"], answer:"Spot problem → propose solution → take action → impact."},
+      {text:"Tell me about a time you missed a deadline.", category:"Behavioral", level:"Advanced", tags:["deadline","risk"], answer:"Be honest; show early communication, recovery plan, prevention next time."},
+      {text:"Tell me about a time you persuaded someone.", category:"Behavioral", level:"Advanced", tags:["influence","stakeholders"], answer:"Use data + empathy; align on shared goal."},
+
+      {text:"How do you explain a complex topic to a non-expert?", category:"Communication", level:"Core", tags:["clarity","audience"], answer:"Use simple words, examples, check understanding, summarize next steps."},
+      {text:"How do you handle a misunderstanding with a coworker?", category:"Communication", level:"Core", tags:["conflict","clarity"], answer:"Ask clarifying questions, restate, agree on facts, document decisions."},
+      {text:"How do you communicate progress to your manager?", category:"Communication", level:"Core", tags:["updates","status"], answer:"Brief updates: done, next, risks, help needed."},
+      {text:"Describe a time you had to deliver bad news.", category:"Communication", level:"Advanced", tags:["difficult conversations"], answer:"Be direct, give context, propose options, outline next steps."},
+      {text:"How do you handle a customer/client who is upset?", category:"Communication", level:"Core", tags:["customer service","empathy"], answer:"Listen, validate, apologize if needed, offer options, follow through."},
+      {text:"Tell me about a time you worked with someone very different from you.", category:"Communication", level:"Core", tags:["diversity","collaboration"], answer:"Respect, curiosity, align on the goal."},
+      {text:"How do you ensure your written communication is clear?", category:"Communication", level:"Advanced", tags:["writing","clarity"], answer:"Structure, bullets, define terms, confirm decisions."},
+      {text:"How do you manage communication in a fast-changing situation?", category:"Communication", level:"Advanced", tags:["change","alignment"], answer:"Short frequent updates, one source of truth, clear owners."},
+
+      {text:"What role do you usually play on a team?", category:"Communication", level:"Core", tags:["teamwork"], answer:"Describe your style + how you adapt to team needs."},
+      {text:"Describe a time you supported a struggling teammate.", category:"Behavioral", level:"Core", tags:["teamwork","support"], answer:"Offer help, share knowledge, pair up, improve outcomes together."},
+      {text:"Tell me about a time you disagreed with your manager.", category:"Behavioral", level:"Advanced", tags:["disagreement","professionalism"], answer:"Present facts respectfully, propose alternatives, align with final decision."},
+      {text:"How do you build trust with a new team?", category:"Communication", level:"Core", tags:["trust","relationships"], answer:"Be reliable, clear, respectful; deliver small wins."},
+      {text:"Describe a time you led without formal authority.", category:"Leadership", level:"Advanced", tags:["influence","leadership"], answer:"Coordinate, align goals, remove blockers, drive results."},
+
+      {text:"How do you handle competing priorities across stakeholders?", category:"Leadership", level:"Advanced", tags:["stakeholders","priorities"], answer:"Clarify goals, estimate impact, negotiate tradeoffs, document decisions."},
+      {text:"Describe your leadership style.", category:"Leadership", level:"Advanced", tags:["leadership style"], answer:"2–3 traits + example (coaching, clarity, accountability)."},
+      {text:"Tell me about a time you led a project.", category:"Leadership", level:"Core", tags:["project","ownership"], answer:"Goal → plan → execution → risks → result → learnings."},
+      {text:"How do you give feedback to someone?", category:"Leadership", level:"Advanced", tags:["feedback","coaching"], answer:"Private, specific, behavior-focused, impact, next steps, follow-up."},
+      {text:"How do you handle underperformance (if you were a manager)?", category:"Leadership", level:"Advanced", tags:["performance","coaching"], answer:"Set expectations, support, measure, document, escalate fairly if needed."},
+
+      {text:"Tell me about a tool or system you learned recently.", category:"Technical", level:"Core", tags:["tools","learning"], answer:"What it does, why you learned it, how you used it, result."},
+      {text:"How do you troubleshoot when something isn’t working?", category:"Technical", level:"Core", tags:["troubleshooting","method"], answer:"Reproduce, isolate variables, check data, test hypotheses, document fix."},
+      {text:"How do you ensure quality in your work?", category:"Technical", level:"Core", tags:["quality","accuracy"], answer:"Checklists, reviews, tests, peer feedback, validate outcomes."},
+      {text:"Describe a time you worked with data or metrics.", category:"Technical", level:"Core", tags:["metrics","analysis"], answer:"What you measured, how you analyzed, what decision changed."},
+      {text:"How do you handle repetitive tasks efficiently?", category:"Technical", level:"Advanced", tags:["automation","efficiency"], answer:"Templates, scripts, batching, SOPs."},
+
+      {text:"What kind of work environment helps you do your best work?", category:"Culture Fit", level:"Core", tags:["environment","fit"], answer:"Be honest but flexible; mention collaboration, clarity, respect, learning."},
+      {text:"What values are important to you at work?", category:"Culture Fit", level:"Core", tags:["values"], answer:"Pick 2–3 values and connect them to how you work."},
+      {text:"Why do you want to work for this company?", category:"Company-Specific", level:"Core", tags:["research","fit"], answer:"Mention mission/product, team, and how you can contribute."},
+      {text:"Tell me about a time you demonstrated integrity.", category:"Behavioral", level:"Advanced", tags:["integrity","ethics"], answer:"Show honesty, responsibility, and protecting quality/people."},
+      {text:"How do you handle change or ambiguity?", category:"Culture Fit", level:"Core", tags:["change","adaptability"], answer:"Clarify goals, take small steps, communicate, learn fast."},
+
+      {text:"What salary range are you targeting?", category:"Salary", level:"Advanced", tags:["negotiation"], answer:"Give researched range + flexibility; ask about total comp and expectations."},
+      {text:"What are your expectations regarding benefits or schedule?", category:"Salary", level:"Advanced", tags:["benefits","schedule"], answer:"State priorities politely and ask what’s standard."},
+      {text:"When can you start?", category:"Common", level:"Core", tags:["availability"], answer:"Give a realistic date; mention notice period; show flexibility if possible."},
+      {text:"Are you interviewing elsewhere?", category:"Common", level:"Advanced", tags:["process","timing"], answer:"If yes, keep it neutral; emphasize interest and timeline."},
+
+      {text:"What do you know about our company?", category:"Company-Specific", level:"Core", tags:["research"], answer:"Mention mission/product, recent news, and why it connects to the role."},
+      {text:"What questions do you have for us?", category:"Company-Specific", level:"Core", tags:["questions","closing"], answer:"Ask about success metrics, team, challenges, onboarding, next steps."}
+    ];
+
+    function uid(){
+      return "q_" + Math.random().toString(16).slice(2) + "_" + Date.now().toString(16);
+    }
+
+    function load(){
+      try{
+        const raw = localStorage.getItem(LS_KEY);
+        items = raw ? JSON.parse(raw) : [];
+        if(!Array.isArray(items)) items = [];
+      }catch{ items = []; }
+    }
+
+    function save(){
+      localStorage.setItem(LS_KEY, JSON.stringify(items));
+      render();
+    }
+
+    function esc(s){
+      return (s ?? "").toString()
+        .replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;")
+        .replaceAll('"',"quot;").replaceAll("'","&#039;");
+    }
+
+    const el = (id)=>document.getElementById(id);
+
+    const q_text = el("q_text");
+    const q_category = el("q_category");
+    const q_level = el("q_level");
+    const q_tags = el("q_tags");
+    const q_answer = el("q_answer");
+
+    const search = el("search");
+    const filterCategory = el("filterCategory");
+    const filterLevel = el("filterLevel");
+    const sortBy = el("sortBy");
+    const list = el("list");
+    const countLine = el("countLine");
+    const quickChips = el("quickChips");
+
+    const seedBtn = el("seedBtn");
+    const addBtn = el("addBtn");
+    const randomBtn = el("randomBtn");
+    const clearBtn = el("clearBtn");
+    const exportBtn = el("exportBtn");
+    const importBtn = el("importBtn");
+    const importFile = el("importFile");
+
+    const editDialog = el("editDialog");
+    const e_text = el("e_text");
+    const e_category = el("e_category");
+    const e_level = el("e_level");
+    const e_tags = el("e_tags");
+    const e_answer = el("e_answer");
+    const cancelEdit = el("cancelEdit");
+    const saveEdit = el("saveEdit");
+
+    let editingId = null;
+
+    function fillCategorySelect(select){
+      select.innerHTML = "";
+      for(const c of CATEGORIES){
+        const opt = document.createElement("option");
+        opt.value = c; opt.textContent = c;
+        select.appendChild(opt);
+      }
+    }
+
+    function setupFilters(){
+      filterCategory.innerHTML = `<option value="">All categories</option>`;
+      for(const c of CATEGORIES){
+        const opt = document.createElement("option");
+        opt.value = c; opt.textContent = c;
+        filterCategory.appendChild(opt);
+      }
+      fillCategorySelect(e_category);
+
+      quickChips.innerHTML = "";
+      const chips = ["Favorites", "Core", "Advanced", "Behavioral", "Technical"];
+      for(const c of chips){
+        const d = document.createElement("div");
+        d.className = "chip";
+        d.textContent = c;
+        d.dataset.chip = c;
+        d.addEventListener("click", ()=>{
+          const isActive = d.classList.contains("active");
+          [...quickChips.querySelectorAll(".chip")].forEach(x=>x.classList.remove("active"));
+          if(isActive){
+            filterLevel.value = "";
+            filterCategory.value = "";
+            d.classList.remove("active");
+            render();
+            return;
+          }
+          d.classList.add("active");
+          if(c === "Favorites"){
+            // handled in render
+          }else if(c === "Core" || c === "Advanced"){
+            filterLevel.value = c;
+            filterCategory.value = "";
+          }else{
+            filterCategory.value = c;
+            filterLevel.value = "";
+          }
+          render();
+        });
+        quickChips.appendChild(d);
+      }
+    }
+
+    function normalizeTags(str){
+      return (str || "")
+        .split(",")
+        .map(s=>s.trim())
+        .filter(Boolean)
+        .slice(0, 12);
+    }
+
+    function addItem(){
+      const text = q_text.value.trim();
+      if(!text){ q_text.focus(); return; }
+      const now = Date.now();
+      items.unshift({
+        id: uid(),
+        text,
+        category: q_category.value,
+        level: q_level.value,
+        tags: normalizeTags(q_tags.value),
+        answer: q_answer.value.trim(),
+        fav: false,
+        createdAt: now,
+        updatedAt: now
+      });
+
+      q_text.value = "";
+      q_tags.value = "";
+      q_answer.value = "";
+      q_category.value = "Common";
+      q_level.value = "Core";
+      save();
+      q_text.focus();
+    }
+
+    function toggleFav(id){
+      const it = items.find(x=>x.id===id);
+      if(!it) return;
+      it.fav = !it.fav;
+      it.updatedAt = Date.now();
+      save();
+    }
+
+    function removeItem(id){
+      items = items.filter(x=>x.id!==id);
+      save();
+    }
+
+    function openEdit(id){
+      const it = items.find(x=>x.id===id);
+      if(!it) return;
+      editingId = id;
+
+      e_text.value = it.text;
+      e_category.value = it.category;
+      e_level.value = it.level;
+      e_tags.value = (it.tags || []).join(", ");
+      e_answer.value = it.answer || "";
+
+      editDialog.showModal();
+    }
+
+    function closeEdit(){
+      editingId = null;
+      editDialog.close();
+    }
+
+    function saveEditItem(){
+      if(!editingId) return;
+      const it = items.find(x=>x.id===editingId);
+      if(!it) return;
+
+      const text = e_text.value.trim();
+      if(!text){ e_text.focus(); return; }
+
+      it.text = text;
+      it.category = e_category.value;
+      it.level = e_level.value;
+      it.tags = normalizeTags(e_tags.value);
+      it.answer = e_answer.value.trim();
+      it.updatedAt = Date.now();
+
+      save();
+      closeEdit();
+    }
+
+    function isFavoritesChipActive(){
+      const favChip = [...quickChips.querySelectorAll(".chip")].find(x=>x.dataset.chip==="Favorites");
+      return favChip?.classList.contains("active");
+    }
+
+    function matches(it, q){
+      if(!q) return true;
+      q = q.toLowerCase();
+      const hay = [
+        it.text, it.category, it.level,
+        (it.tags||[]).join(" "),
+        it.answer || ""
+      ].join(" ").toLowerCase();
+      return hay.includes(q);
+    }
+
+    function render(){
+      const favOnly = isFavoritesChipActive();
+
+      const q = search.value.trim();
+      const cat = filterCategory.value;
+      const lvl = filterLevel.value;
+
+      let filtered = items.filter(it=>{
+        if(favOnly && !it.fav) return false;
+        if(cat && it.category !== cat) return false;
+        if(lvl && it.level !== lvl) return false;
+        if(!matches(it, q)) return false;
+        return true;
+      });
+
+      const s = sortBy.value;
+      filtered.sort((a,b)=>{
+        if(s==="alpha_asc") return a.text.localeCompare(b.text);
+        if(s==="created_desc") return b.createdAt - a.createdAt;
+        if(s==="fav_first"){
+          if(a.fav !== b.fav) return a.fav ? -1 : 1;
+          return b.updatedAt - a.updatedAt;
+        }
+        return b.updatedAt - a.updatedAt;
+      });
+
+      countLine.textContent = `${filtered.length} question${filtered.length===1?"":"s"} (of ${items.length})`;
+
+      list.innerHTML = "";
+      if(filtered.length === 0){
+        const empty = document.createElement("div");
+        empty.className = "card";
+        empty.innerHTML = `
+          <div style="font-weight:650">No results</div>
+          <div class="muted" style="margin-top:6px">
+            Try clearing filters, or press <span class="kbd">Seed</span> to add sample questions.
+          </div>`;
+        list.appendChild(empty);
+        return;
+      }
+
+      filtered.forEach((it, index) => {
+        const d = document.createElement("div");
+        d.className = "card qCard";
+
+        const tagBadges = (it.tags||[]).slice(0, 8).map(t=>`<span class="badge">#${esc(t)}</span>`).join("");
+
+        d.innerHTML = `
+          <div class="qTop">
+            <div style="min-width:0">
+              <div class="qTitle">${index + 1}. ${esc(it.text)}</div>
+              <div class="meta" style="margin-top:6px">
+                <span class="badge">${esc(it.category)}</span>
+                <span class="badge">${esc(it.level)}</span>
+                ${it.fav ? `<span class="badge star">★ Favorite</span>` : ``}
+              </div>
+              <div class="meta" style="margin-top:6px">${tagBadges}</div>
+            </div>
+            <div class="qActions">
+              <button class="iconBtn" title="Favorite" data-act="fav" data-id="${it.id}">
+                ${it.fav ? "★" : "☆"}
+              </button>
+              <button class="iconBtn" title="Edit" data-act="edit" data-id="${it.id}">✎</button>
+              <button class="iconBtn" title="Delete" data-act="del" data-id="${it.id}">🗑</button>
+            </div>
+          </div>
+
+          ${it.answer ? `
+            <div class="muted">Your draft answer</div>
+            <div style="white-space:pre-wrap; line-height:1.35">${esc(it.answer)}</div>
+          ` : `<div class="muted">No answer yet — add one to practice faster.</div>`}
+        `;
+
+        list.appendChild(d);
+      });
+    }
+
+    function seed(){
+      const now = Date.now();
+      const existingTexts = new Set(items.map(x=>x.text.trim().toLowerCase()));
+
+      for(const s of SEED){
+        const key = s.text.trim().toLowerCase();
+        if(existingTexts.has(key)) continue;
+
+        items.unshift({
+          id: uid(),
+          text: s.text,
+          category: s.category,
+          level: s.level,
+          tags: Array.isArray(s.tags) ? s.tags : normalizeTags(s.tags),
+          answer: s.answer || "",
+          fav: false,
+          createdAt: now,
+          updatedAt: now
+        });
+        existingTexts.add(key);
+      }
+      save();
+    }
+
+    function exportJSON(){
+      const data = { version: 1, exportedAt: new Date().toISOString(), items };
+      const blob = new Blob([JSON.stringify(data, null, 2)], {type:"application/json"});
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = "interview-questions-backup.json";
+      a.click();
+      URL.revokeObjectURL(a.href);
+    }
+
+    function importJSONFile(file){
+      const reader = new FileReader();
+      reader.onload = () => {
+        try{
+          const parsed = JSON.parse(reader.result);
+          const incoming = Array.isArray(parsed?.items) ? parsed.items : (Array.isArray(parsed) ? parsed : null);
+          if(!incoming) throw new Error("Invalid JSON format");
+
+          const map = new Map(items.map(it => [it.text.trim().toLowerCase(), it]));
+          for(const raw of incoming){
+            const text = (raw?.text || "").trim();
+            if(!text) continue;
+
+            const key = text.toLowerCase();
+            const now = Date.now();
+
+            if(map.has(key)){
+              const it = map.get(key);
+              if(!it.answer && raw.answer) it.answer = String(raw.answer);
+              if((it.tags||[]).length===0 && Array.isArray(raw.tags)) it.tags = raw.tags.map(String);
+              it.updatedAt = now;
+            }else{
+              const it = {
+                id: uid(),
+                text,
+                category: CATEGORIES.includes(raw.category) ? raw.category : "Common",
+                level: (raw.level === "Advanced" ? "Advanced" : "Core"),
+                tags: Array.isArray(raw.tags) ? raw.tags.map(String).slice(0,12) : normalizeTags(raw.tags),
+                answer: (raw.answer || "").toString(),
+                fav: !!raw.fav,
+                createdAt: Number(raw.createdAt) || now,
+                updatedAt: Number(raw.updatedAt) || now
+              };
+              items.unshift(it);
+              map.set(key, it);
+            }
+          }
+          save();
+          alert("Import complete!");
+        }catch(e){
+          alert("Import failed: " + (e?.message || "Unknown error"));
+        }
+      };
+      reader.readAsText(file);
+    }
+
+    function randomPick(){
+      const q = search.value.trim();
+      const cat = filterCategory.value;
+      const lvl = filterLevel.value;
+      const favOnly = isFavoritesChipActive();
+
+      const pool = items.filter(it=>{
+        if(favOnly && !it.fav) return false;
+        if(cat && it.category !== cat) return false;
+        if(lvl && it.level !== lvl) return false;
+        if(!matches(it, q)) return false;
+        return true;
+      });
+
+      if(pool.length === 0){
+        alert("No questions match your current filters.");
+        return;
+      }
+      const it = pool[Math.floor(Math.random()*pool.length)];
+      openEdit(it.id);
+    }
+
+    // Events
+    addBtn.addEventListener("click", addItem);
+    seedBtn.addEventListener("click", seed);
+    randomBtn.addEventListener("click", randomPick);
+
+    clearBtn.addEventListener("click", ()=>{
+      if(confirm("Delete ALL questions? This cannot be undone.")){
+        items = [];
+        save();
+      }
+    });
+
+    list.addEventListener("click", (e)=>{
+      const btn = e.target.closest("button");
+      if(!btn) return;
+      const id = btn.dataset.id;
+      const act = btn.dataset.act;
+      if(!id || !act) return;
+
+      if(act==="fav") toggleFav(id);
+      if(act==="edit") openEdit(id);
+      if(act==="del"){
+        if(confirm("Delete this question?")) removeItem(id);
+      }
+    });
+
+    [search, filterCategory, filterLevel, sortBy].forEach(x=>{
+      x.addEventListener("input", render);
+      x.addEventListener("change", render);
+    });
+
+    window.addEventListener("keydown", (e)=>{
+      const isMac = navigator.platform.toLowerCase().includes("mac");
+      const mod = isMac ? e.metaKey : e.ctrlKey;
+      if(mod && e.key.toLowerCase()==="k"){
+        e.preventDefault();
+        search.focus();
+      }
+      if(e.key === "Escape" && editDialog.open) closeEdit();
+    });
+
+    cancelEdit.addEventListener("click", closeEdit);
+    saveEdit.addEventListener("click", saveEditItem);
+
+    exportBtn.addEventListener("click", exportJSON);
+    importBtn.addEventListener("click", ()=>importFile.click());
+    importFile.addEventListener("change", ()=>{
+      const file = importFile.files?.[0];
+      if(file) importJSONFile(file);
+      importFile.value = "";
+    });
+
+    // Init
+    load();
+    setupFilters();
+    render();
+
+    // Service Worker
+    const statusPill = document.getElementById("statusPill");
+    if("serviceWorker" in navigator){
+      window.addEventListener("load", async ()=>{
+        try{
+          await navigator.serviceWorker.register("./sw.js");
+          statusPill.textContent = navigator.onLine ? "Online" : "Offline";
+        }catch{
+          statusPill.textContent = "SW failed";
+        }
+      });
+    }else{
+      statusPill.textContent = "No SW";
+    }
+
+    window.addEventListener("online", ()=> statusPill.textContent="Online");
+    window.addEventListener("offline", ()=> statusPill.textContent="Offline");
+  </script>
+</body>
+</html>
